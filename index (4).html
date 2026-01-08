@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Lab Calculator Suite | CBSE Class 12</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🔬 Physics Lab Calculator Suite</h1>
+            <p>Complete CBSE Class 12 Experiments | Optics & Electricity | 100cm Optical Bench</p>
+        </header>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('prism')">Prism Deviation</button>
+            <button class="tab-btn" onclick="switchTab('lens-focal')">Lens Focal Length</button>
+            <button class="tab-btn" onclick="switchTab('mirror-focal')">Convex Mirror</button>
+            <button class="tab-btn" onclick="switchTab('ohms-law')">Ohm's Law</button>
+            <button class="tab-btn" onclick="switchTab('resistivity')">Resistivity</button>
+            <button class="tab-btn" onclick="switchTab('metre-bridge')">Metre Bridge</button>
+            <button class="tab-btn" onclick="switchTab('help')">Help & Formulas</button>
+        </div>
+
+        <div class="content-wrapper">
+            <!-- PRISM DEVIATION -->
+            <div id="prism" class="tab-content active">
+                <h2>Prism Deviation Calculator</h2>
+                <div class="formula-box">
+                    <strong>Formula:</strong> δ = i₁ + i₂ - A<br>
+                    <strong>Snell's Law:</strong> sin(i₁) = μ × sin(r₁) and sin(i₂) = μ × sin(r₂)<br>
+                    <strong>Relation:</strong> A = r₁ + r₂
+                </div>
+                
+                <div class="calculator-section">
+                    <div>
+                        <h3>Enter Values</h3>
+                        <div class="input-group">
+                            <label>Prism Angle (A) in degrees</label>
+                            <input type="number" id="prismAngle" value="60" min="30" max="90" step="1">
+                            <div class="note">Typical: 30°, 45°, 60°</div>
+                        </div>
+                        <div class="input-group">
+                            <label>Angle of Incidence (i₁) in degrees</label>
+                            <input type="number" id="angleIncidence" value="45" min="30" max="80" step="1">
+                        </div>
+                        <div class="input-group">
+                            <label>Refractive Index (μ) of Prism</label>
+                            <input type="number" id="refractiveIndex" value="1.5" min="1.3" max="1.9" step="0.05">
+                            <div class="note">Glass: 1.5, Crown glass: 1.52, Flint glass: 1.6</div>
+                        </div>
+                        <div class="button-group">
+                            <button onclick="calculateDeviation()">Calculate Deviation</button>
+                            <button class="secondary" onclick="generatePrismGraph()">Generate Graph</button>
+                        </div>
+                        <button style="width: 100%; margin-top: 10px;" onclick="clearPrismResults()">Clear</button>
+                    </div>
+
+                    <div>
+                        <h3>Results</h3>
+                        <div id="prismResultsBox" style="display: none;">
+                            <div class="results-box">
+                                <h3>Calculated Values</h3>
+                                <div class="result-item">
+                                    <span class="result-label">Angle of Refraction (r₁):</span>
+                                    <span class="result-value" id="refraction1">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Angle at Second Surface (r₂):</span>
+                                    <span class="result-value" id="refraction2">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label">Angle of Emergence (i₂):</span>
+                                    <span class="result-value" id="angleEmergence">--</span>
+                                </div>
+                                <div class="result-item">
+                                    <span class="result-label"><strong>Angle of Deviation (δ):</strong></span>
+                                    <span class="result-value" id="deviationAngle" style="font-size: 18px;">--</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="prismErrorBox" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <div class="chart-container" id="prismChartContainer" style="display: none;">
+                    <h3>Deviation vs Angle of Incidence</h3>
+                    <canvas id="prismChart"></canvas>
+                </div>
+
+                <div class="table-container" id="prismTableContainer" style="display: none;">
+                    <h3>Observation Table</h3>
+                    <table>
+                        <thead>
+                            <tr><th>i₁ (°)</th><th>r₁ (°)</th><th>r₂ (°)</th><th>i₂ (°)</th><th>δ (°)</th></tr>
+                        </thead>
+                        <tbody id="prismTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="info-section">
+                    <strong>Procedure:</strong> Vary angle of incidence from 35° to 70°. Plot graph between i₁ and δ. Find minimum deviation from the curve.
+                </div>
+            </div>
+
+            <!-- LENS FOCAL LENGTH -->
+            <div id="lens-focal" class="tab-content">
+                <h2>Focal Length Calculator (Convex Lens)</h2>
+                <div class="formula-box">
+                    <strong>Lens Equation:</strong> 1/f = 1/u + 1/v<br>
+                    <strong>Rearranged:</strong> f = (u × v) / (u + v)<br>
+                    <strong>Magnification:</strong> m = -v/u
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchLensTab('lens-forward')" style="width: auto;">Forward Calculator</button>
+                    <button class="tab-btn" onclick="switchLensTab('lens-reverse')" style="width: auto;">Reverse Generator</button>
+                </div>
+
+                <!-- FORWARD LENS CALCULATOR -->
+                <div id="lens-forward" class="lens-tab-content active">
+                    <h3>Calculate Focal Length from Bench Positions</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Setup (100cm Bench)</h4>
+                            <div class="input-group">
+                                <label>Object Position (cm)</label>
+                                <input type="number" id="lensObjPos" value="20" min="0" max="100" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Image Position (cm)</label>
+                                <input type="number" id="lensImgPos" value="80" min="0" max="100" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Lens Position (cm)</label>
+                                <input type="number" id="lensLensPos" value="50" min="0" max="100" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="calculateLensFocalLength()">Calculate f</button>
+                                <button class="secondary" onclick="clearLensResults()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Results</h4>
+                            <div id="lensResultsBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Object Distance (u):</span>
+                                        <span class="result-value" id="lensCalcU">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Image Distance (v):</span>
+                                        <span class="result-value" id="lensCalcV">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Magnification:</span>
+                                        <span class="result-value" id="lensMagnification">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label"><strong>Focal Length (f):</strong></span>
+                                        <span class="result-value" id="lensFocalLength" style="font-size: 18px; color: #4caf50;">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="lensErrorBox" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVERSE LENS GENERATOR -->
+                <div id="lens-reverse" class="lens-tab-content" style="display: none;">
+                    <h3>Generate Readings: 10 Above 2f + 10 Below 2f</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Parameters</h4>
+                            <div class="input-group">
+                                <label>Focal Length (f) in cm</label>
+                                <input type="number" id="givenLensF" value="10" min="2" max="30" step="0.5">
+                            </div>
+                            <div class="input-group">
+                                <label>Lens Position (cm)</label>
+                                <input type="number" id="lensRevPos" value="50" min="20" max="80" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="generateLensReadings()">Generate 20 Readings</button>
+                                <button class="secondary" onclick="clearLensTable()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Statistics</h4>
+                            <div id="lensStatsBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Given f:</span>
+                                        <span class="result-value" id="givenLensF_display">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">2f Position:</span>
+                                        <span class="result-value" id="lens2F">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Readings Generated:</span>
+                                        <span class="result-value" id="lensReadingsCount">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" id="lensTableContainer" style="display: none;">
+                        <h3>Generated Observation Table (20 Readings)</h3>
+                        <table>
+                            <thead>
+                                <tr><th>S.No</th><th>Obj Pos</th><th>Img Pos</th><th>u</th><th>v</th><th>1/u</th><th>1/v</th><th>1/u+1/v</th><th>f</th></tr>
+                            </thead>
+                            <tbody id="lensTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="chart-container" id="lensChartContainer" style="display: none;">
+                        <h3>u vs v Graph</h3>
+                        <canvas id="lensChart"></canvas>
+                        <div id="lensGraphF" style="margin-top: 15px; padding: 12px; background: #e8f5e9; border-radius: 6px; text-align: center; font-weight: 600; color: #2e7d32;"></div>
+                    </div>
+
+                    <div class="chart-container" id="lensReciprocalContainer" style="display: none;">
+                        <h3>Reciprocal Graph: 1/u vs 1/v</h3>
+                        <canvas id="lensReciprocalChart"></canvas>
+                        <div id="lensReciprocalF" style="margin-top: 15px; padding: 12px; background: #e8f5e9; border-radius: 6px; text-align: center; font-weight: 600; color: #2e7d32;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONVEX MIRROR -->
+            <div id="mirror-focal" class="tab-content">
+                <h2>Convex Mirror Focal Length (Using Convex Lens)</h2>
+                <p style="color: var(--color-text-light); margin-bottom: 20px;">
+                    <strong>Setup:</strong> Object → Convex Lens (forms real image) → Virtual Object → Convex Mirror → Virtual Image
+                </p>
+
+                <div class="formula-box">
+                    <strong>Mirror Equation:</strong> 1/f = 1/u + 1/v<br>
+                    <strong>Sign Convention:</strong> u(+), v(-), f(-) for convex mirror<br>
+                    <strong>Radius:</strong> R = 2|f| (absolute value)
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchMirrorTab('mirror-forward')" style="width: auto;">Forward Calculator</button>
+                    <button class="tab-btn" onclick="switchMirrorTab('mirror-reverse')" style="width: auto;">Reverse Generator</button>
+                </div>
+
+                <!-- FORWARD MIRROR CALCULATOR -->
+                <div id="mirror-forward" class="mirror-tab-content active">
+                    <h3>Calculate Mirror Focal Length</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Bench Positions (0-100cm)</h4>
+                            <div class="input-group">
+                                <label>Object Needle Position</label>
+                                <input type="number" id="mirrorObjNeedle" value="20" min="0" max="100" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Convex Lens Position</label>
+                                <input type="number" id="mirrorLensPos" value="35" min="0" max="100" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Convex Mirror Position</label>
+                                <input type="number" id="mirrorMirrorPos" value="70" min="0" max="100" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Image Needle Position (without mirror)</label>
+                                <input type="number" id="mirrorImgNeedle" value="55" min="0" max="100" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="calculateMirrorF()">Calculate Mirror f</button>
+                                <button class="secondary" onclick="clearMirrorCalc()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Results</h4>
+                            <div id="mirrorCalcBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">u (mirror):</span>
+                                        <span class="result-value" id="mirrorU">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">v (mirror):</span>
+                                        <span class="result-value" id="mirrorV">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Magnification:</span>
+                                        <span class="result-value" id="mirrorMag">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label"><strong>f (Convex Mirror):</strong></span>
+                                        <span class="result-value" id="mirrorF" style="font-size: 18px; color: #ff9800;">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Radius of Curvature:</span>
+                                        <span class="result-value" id="mirrorR" style="color: #2e7d32;">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="mirrorCalcError" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVERSE MIRROR GENERATOR -->
+                <div id="mirror-reverse" class="mirror-tab-content" style="display: none;">
+                    <h3>Generate 5 Mirror Readings</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Parameters</h4>
+                            <div class="input-group">
+                                <label>Mirror Focal Length (f) in cm</label>
+                                <input type="number" id="givenMirrorF" value="-10" step="0.5">
+                                <div class="note">Negative for convex (e.g., -10, -15)</div>
+                            </div>
+                            <div class="input-group">
+                                <label>Lens Focal Length (f_lens) in cm</label>
+                                <input type="number" id="givenLensF_mirror" value="10" min="2" max="30" step="0.5">
+                            </div>
+                            <div class="input-group">
+                                <label>Object-Lens Distance (cm)</label>
+                                <input type="number" id="oLensDist" value="15" min="5" max="50" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Lens-Mirror Distance (cm)</label>
+                                <input type="number" id="lensMirrorDist" value="35" min="10" max="60" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="generateMirrorReadings()">Generate 5 Readings</button>
+                                <button class="secondary" onclick="clearMirrorGen()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Setup Info</h4>
+                            <div id="mirrorGenStats" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Given Mirror f:</span>
+                                        <span class="result-value" id="mirrorGenF">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Mirror Radius R:</span>
+                                        <span class="result-value" id="mirrorGenR">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Readings:</span>
+                                        <span class="result-value" id="mirrorGenCount">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" id="mirrorTableContainer" style="display: none;">
+                        <h3>Generated Mirror Readings (5 Readings)</h3>
+                        <table>
+                            <thead>
+                                <tr><th>S.No</th><th>Obj Pos</th><th>Lens Pos</th><th>Mirror Pos</th><th>Img Pos</th><th>u_mirror</th><th>v_mirror</th><th>f</th><th>R</th></tr>
+                            </thead>
+                            <tbody id="mirrorTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- OHM'S LAW -->
+            <div id="ohms-law" class="tab-content">
+                <h2>Ohm's Law Verification</h2>
+                <div class="formula-box">
+                    <strong>Ohm's Law:</strong> V = I × R<br>
+                    <strong>Resistance:</strong> R = V / I (from graph slope)<br>
+                    <strong>Graph:</strong> V (y-axis) vs I (x-axis) - should be straight line through origin
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchOhmsTab('ohms-forward')" style="width: auto;">Calculator</button>
+                    <button class="tab-btn" onclick="switchOhmsTab('ohms-reverse')" style="width: auto;">Generator</button>
+                </div>
+
+                <!-- FORWARD OHMS CALCULATOR -->
+                <div id="ohms-forward" class="ohms-tab-content active">
+                    <h3>Verify Ohm's Law from V-I Measurements</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Enter V-I Readings</h4>
+                            <div class="input-group">
+                                <label>Number of Readings</label>
+                                <input type="number" id="ohmsNumReadings" value="5" min="2" max="10" step="1">
+                            </div>
+                            <div id="ohmsInputs" style="margin-bottom: 15px;"></div>
+                            <div class="button-group">
+                                <button onclick="generateOhmsInputs()">Set Input Fields</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Results</h4>
+                            <div id="ohmsResultBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Average Resistance (R):</span>
+                                        <span class="result-value" id="ohmsR">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Correlation Coefficient:</span>
+                                        <span class="result-value" id="ohmsCorr">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Straight Line (yes/no):</span>
+                                        <span class="result-value" id="ohmsLinear">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-container" id="ohmsChartContainer" style="display: none;">
+                        <h3>V vs I Graph (Ohm's Law)</h3>
+                        <canvas id="ohmsChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- REVERSE OHMS GENERATOR -->
+                <div id="ohms-reverse" class="ohms-tab-content" style="display: none;">
+                    <h3>Generate V-I Readings from Known Resistance</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Parameters</h4>
+                            <div class="input-group">
+                                <label>Resistance (R) in Ohms</label>
+                                <input type="number" id="ohmsGivenR" value="5" min="1" max="100" step="0.5">
+                            </div>
+                            <div class="input-group">
+                                <label>Max Voltage (V) in Volts</label>
+                                <input type="number" id="ohmsMaxV" value="5" min="1" max="12" step="0.5">
+                            </div>
+                            <div class="input-group">
+                                <label>Number of Readings</label>
+                                <input type="number" id="ohmsGenReadings" value="6" min="2" max="10" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="generateOhmsReadings()">Generate Readings</button>
+                                <button class="secondary" onclick="clearOhmsGen()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Statistics</h4>
+                            <div id="ohmsGenStats" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Given R:</span>
+                                        <span class="result-value" id="ohmsGenR">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Readings Generated:</span>
+                                        <span class="result-value" id="ohmsGenCount">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" id="ohmsTableContainer" style="display: none;">
+                        <h3>Generated V-I Readings</h3>
+                        <table>
+                            <thead>
+                                <tr><th>S.No</th><th>V (V)</th><th>I (A)</th><th>R = V/I (Ω)</th></tr>
+                            </thead>
+                            <tbody id="ohmsTableBody"></tbody>
+                        </table>
+                    </div>
+
+                    <div class="chart-container" id="ohmsGenChartContainer" style="display: none;">
+                        <h3>Generated V vs I Graph</h3>
+                        <canvas id="ohmsGenChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RESISTIVITY -->
+            <div id="resistivity" class="tab-content">
+                <h2>Resistivity Determination</h2>
+                <div class="formula-box">
+                    <strong>Resistivity Formula:</strong> ρ = R × A / L<br>
+                    where: R = resistance (Ω), A = π(d/2)² (cross-section area), L = length (cm)<br>
+                    <strong>Unit:</strong> ρ in Ω⋅cm (ohm-centimeter)
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchResTab('res-forward')" style="width: auto;">Calculator</button>
+                    <button class="tab-btn" onclick="switchResTab('res-reverse')" style="width: auto;">Generator</button>
+                </div>
+
+                <!-- FORWARD RESISTIVITY CALCULATOR -->
+                <div id="res-forward" class="res-tab-content active">
+                    <h3>Calculate Resistivity from Wire Specifications</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Wire Parameters</h4>
+                            <div class="input-group">
+                                <label>Resistance (R) in Ohms</label>
+                                <input type="number" id="resR" value="10" min="0.1" max="100" step="0.1">
+                            </div>
+                            <div class="input-group">
+                                <label>Wire Length (L) in cm</label>
+                                <input type="number" id="resL" value="100" min="10" max="200" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Wire Diameter (d) in mm</label>
+                                <input type="number" id="resD" value="0.5" min="0.1" max="5" step="0.01">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="calculateResistivity()">Calculate ρ</button>
+                                <button class="secondary" onclick="clearResCalc()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Results</h4>
+                            <div id="resResultBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Cross-section Area (A):</span>
+                                        <span class="result-value" id="resA">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label"><strong>Resistivity (ρ):</strong></span>
+                                        <span class="result-value" id="resRho" style="font-size: 18px; color: #4caf50;">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Material Type:</span>
+                                        <span class="result-value" id="resMaterial">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="resErrorBox" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVERSE RESISTIVITY GENERATOR -->
+                <div id="res-reverse" class="res-tab-content" style="display: none;">
+                    <h3>Generate Resistivity Readings</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Wire Specimen</h4>
+                            <div class="input-group">
+                                <label>Resistivity (ρ) in Ω⋅cm</label>
+                                <input type="number" id="resGivenRho" value="1.68" min="0.01" max="100" step="0.01">
+                                <div class="note">Cu: 1.68, Ni: 6.84, Constantan: 49, Nichrome: 100</div>
+                            </div>
+                            <div class="input-group">
+                                <label>Wire Length (L) in cm</label>
+                                <input type="number" id="resGenL" value="100" min="10" max="200" step="1">
+                            </div>
+                            <div class="input-group">
+                                <label>Wire Diameter (d) in mm</label>
+                                <input type="number" id="resGenD" value="0.5" min="0.1" max="5" step="0.01">
+                            </div>
+                            <div class="input-group">
+                                <label>Number of Readings</label>
+                                <input type="number" id="resGenReadings" value="5" min="2" max="8" step="1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="generateResistivityReadings()">Generate Readings</button>
+                                <button class="secondary" onclick="clearResGen()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Statistics</h4>
+                            <div id="resGenStats" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Given ρ:</span>
+                                        <span class="result-value" id="resGenRho">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Wire Area:</span>
+                                        <span class="result-value" id="resGenArea">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Readings:</span>
+                                        <span class="result-value" id="resGenCount">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" id="resTableContainer" style="display: none;">
+                        <h3>Generated Resistivity Readings</h3>
+                        <table>
+                            <thead>
+                                <tr><th>S.No</th><th>Length (cm)</th><th>Resistance (Ω)</th><th>ρ = R×A/L</th></tr>
+                            </thead>
+                            <tbody id="resTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- METRE BRIDGE -->
+            <div id="metre-bridge" class="tab-content">
+                <h2>Metre Bridge - Unknown Resistance</h2>
+                <div class="formula-box">
+                    <strong>Balance Condition:</strong> R_unknown / R_known = L / (100 - L)<br>
+                    <strong>Rearranged:</strong> R_unknown = R_known × L / (100 - L)<br>
+                    where L = balancing length in cm
+                </div>
+
+                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                    <button class="tab-btn active" onclick="switchMBTab('mb-forward')" style="width: auto;">Calculator</button>
+                    <button class="tab-btn" onclick="switchMBTab('mb-reverse')" style="width: auto;">Generator</button>
+                </div>
+
+                <!-- FORWARD MB CALCULATOR -->
+                <div id="mb-forward" class="mb-tab-content active">
+                    <h3>Calculate Unknown Resistance</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Metre Bridge Setup</h4>
+                            <div class="input-group">
+                                <label>Known Resistance (R_s) in Ohms</label>
+                                <input type="number" id="mbKnownR" value="5" min="0.1" max="12" step="0.1">
+                                <div class="note">Standard resistance box (1-12Ω)</div>
+                            </div>
+                            <div class="input-group">
+                                <label>Balancing Length (L) in cm</label>
+                                <input type="number" id="mbBalanceL" value="40" min="1" max="99" step="0.5">
+                                <div class="note">0-100cm scale</div>
+                            </div>
+                            <div class="button-group">
+                                <button onclick="calculateMBUnknown()">Calculate R_x</button>
+                                <button class="secondary" onclick="clearMBCalc()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Results</h4>
+                            <div id="mbResultBox" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">R_known (R_s):</span>
+                                        <span class="result-value" id="mbKnown">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Balancing Length:</span>
+                                        <span class="result-value" id="mbL">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">L / (100-L):</span>
+                                        <span class="result-value" id="mbRatio">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label"><strong>Unknown R (R_x):</strong></span>
+                                        <span class="result-value" id="mbUnknownR" style="font-size: 18px; color: #2180a5;">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="mbErrorBox" style="display: none;"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REVERSE MB GENERATOR -->
+                <div id="mb-reverse" class="mb-tab-content" style="display: none;">
+                    <h3>Generate Balancing Lengths for 12 Known Resistances</h3>
+                    <div class="calculator-section">
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Parameters</h4>
+                            <div class="input-group">
+                                <label>Unknown Resistance (R_x) in Ohms</label>
+                                <input type="number" id="mbUnknownGiven" value="6" min="0.5" max="15" step="0.1">
+                            </div>
+                            <div class="button-group">
+                                <button onclick="generateMBReadings()">Generate for All 12 Values</button>
+                                <button class="secondary" onclick="clearMBGen()">Clear</button>
+                            </div>
+                        </div>
+                        <div>
+                            <h4 style="color: var(--color-primary); margin-top: 0;">Statistics</h4>
+                            <div id="mbGenStats" style="display: none;">
+                                <div class="results-box">
+                                    <div class="result-item">
+                                        <span class="result-label">Unknown R (R_x):</span>
+                                        <span class="result-value" id="mbGenRx">--</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span class="result-label">Readings Generated:</span>
+                                        <span class="result-value" id="mbGenCount">--</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-container" id="mbTableContainer" style="display: none;">
+                        <h3>Balancing Lengths for Known Resistances (1-12Ω)</h3>
+                        <table>
+                            <thead>
+                                <tr><th>S.No</th><th>R_known (Ω)</th><th>L (cm)</th><th>(100-L)</th><th>L/(100-L)</th><th>R_x = R_s × L/(100-L)</th></tr>
+                            </thead>
+                            <tbody id="mbTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- HELP & FORMULAS -->
+            <div id="help" class="tab-content">
+                <h2>Help & Complete Formulas</h2>
+
+                <h3>1️⃣ Prism Deviation</h3>
+                <div class="formula-box">
+                    δ = i₁ + i₂ - A<br>
+                    A = r₁ + r₂<br>
+                    sin(i₁) = μ × sin(r₁)<br>
+                    sin(i₂) = μ × sin(r₂)
+                </div>
+
+                <h3>2️⃣ Focal Length (Lens & Mirror)</h3>
+                <div class="formula-box">
+                    1/f = 1/u + 1/v<br>
+                    f = (u × v) / (u + v)<br>
+                    m = -v/u<br>
+                    2f = 4cm (when u = v)
+                </div>
+
+                <h3>3️⃣ Convex Mirror (Sign Convention)</h3>
+                <div class="formula-box">
+                    u > 0 (real object)<br>
+                    v < 0 (virtual image)<br>
+                    f < 0 (convex mirror)<br>
+                    R = 2|f|
+                </div>
+
+                <h3>4️⃣ Ohm's Law</h3>
+                <div class="formula-box">
+                    V = I × R<br>
+                    R = V / I<br>
+                    Graph: V vs I (straight line, slope = R)
+                </div>
+
+                <h3>5️⃣ Resistivity</h3>
+                <div class="formula-box">
+                    ρ = R × A / L<br>
+                    A = π(d/2)²<br>
+                    Unit: Ω⋅cm
+                </div>
+
+                <h3>6️⃣ Metre Bridge</h3>
+                <div class="formula-box">
+                    R_x / R_s = L / (100 - L)<br>
+                    R_x = R_s × L / (100 - L)<br>
+                    Balancing condition: null deflection
+                </div>
+
+                <div class="info-section" style="margin-top: 30px;">
+                    <strong>About This Suite:</strong> Complete CBSE Class 12 Physics Lab Calculator with 6 experiments. All experiments include forward calculators, reverse generators, graphical analysis, and standard observation tables. Proper sign conventions and physical principles applied throughout.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="optics.js"></script>
+    <script src="electricity.js"></script>
+    <script>
+        let currentChart = null;
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function switchLensTab(tabName) {
+            document.querySelectorAll('.lens-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function switchMirrorTab(tabName) {
+            document.querySelectorAll('.mirror-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function switchOhmsTab(tabName) {
+            document.querySelectorAll('.ohms-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function switchResTab(tabName) {
+            document.querySelectorAll('.res-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function switchMBTab(tabName) {
+            document.querySelectorAll('.mb-tab-content').forEach(t => t.style.display = 'none');
+            document.getElementById(tabName).style.display = 'block';
+            event.target.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function toRad(deg) { return deg * Math.PI / 180; }
+        function toDeg(rad) { return rad * 180 / Math.PI; }
+        
+        function showError(msg, boxId) {
+            document.getElementById(boxId).innerHTML = `<div class="error-message">${msg}</div>`;
+            document.getElementById(boxId).style.display = 'block';
+        }
+    </script>
+</body>
+</html>
