@@ -3,718 +3,80 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Physics Lab Calculator - Prism & Optics</title>
+    <title>🔬 Physics Lab Calculator Suite | CBSE Class 12</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
-    <style>
-        :root {
-            --color-primary: #2180a5;
-            --color-primary-hover: #1a6a8a;
-            --color-secondary: #e8f4f8;
-            --color-text: #1a1a1a;
-            --color-text-light: #666;
-            --color-border: #ddd;
-            --color-bg: #f5f5f5;
-            --color-surface: #fff;
-            --color-success: #4caf50;
-            --color-error: #f44336;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
-            background: var(--color-bg);
-            color: var(--color-text);
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        header {
-            background: var(--color-primary);
-            color: white;
-            padding: 30px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            font-size: 28px;
-            margin-bottom: 5px;
-        }
-
-        header p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .tab-btn {
-            padding: 12px 24px;
-            background: var(--color-surface);
-            border: 2px solid var(--color-border);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            color: var(--color-text);
-        }
-
-        .tab-btn:hover {
-            border-color: var(--color-primary);
-            color: var(--color-primary);
-        }
-
-        .tab-btn.active {
-            background: var(--color-primary);
-            color: white;
-            border-color: var(--color-primary);
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .content-wrapper {
-            background: var(--color-surface);
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-
-        .calculator-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-            margin-bottom: 20px;
-        }
-
-        @media (max-width: 768px) {
-            .calculator-section {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        .input-group label {
-            display: block;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: var(--color-text);
-            font-size: 14px;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--color-border);
-            border-radius: 6px;
-            font-size: 14px;
-            transition: border-color 0.3s ease;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px rgba(33, 128, 141, 0.1);
-        }
-
-        .button-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        button {
-            padding: 12px 24px;
-            background: var(--color-primary);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        button:hover {
-            background: var(--color-primary-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(33, 128, 141, 0.3);
-        }
-
-        button:active {
-            transform: translateY(0);
-        }
-
-        button.secondary {
-            background: var(--color-secondary);
-            color: var(--color-primary);
-        }
-
-        button.secondary:hover {
-            background: #d0e8f2;
-        }
-
-        .results-box {
-            background: #f0f7ff;
-            border-left: 4px solid var(--color-primary);
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
-
-        .results-box h3 {
-            color: var(--color-primary);
-            font-size: 16px;
-            margin-bottom: 15px;
-        }
-
-        .result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(33, 128, 141, 0.1);
-            font-size: 14px;
-        }
-
-        .result-item:last-child {
-            border-bottom: none;
-        }
-
-        .result-label {
-            color: var(--color-text-light);
-            font-weight: 500;
-        }
-
-        .result-value {
-            color: var(--color-primary);
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-        }
-
-        .chart-container {
-            position: relative;
-            height: 400px;
-            margin-top: 30px;
-        }
-
-        .formula-box {
-            background: #fffbf0;
-            border: 1px solid #e8d4b8;
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            color: var(--color-text);
-            line-height: 1.6;
-        }
-
-        .info-section {
-            background: #e8f5e9;
-            border-left: 4px solid var(--color-success);
-            padding: 15px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            color: #2e7d32;
-        }
-
-        .table-container {
-            overflow-x: auto;
-            margin-top: 20px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        th {
-            background: var(--color-primary);
-            color: white;
-            padding: 10px;
-            text-align: left;
-            font-weight: 600;
-        }
-
-        td {
-            padding: 10px;
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        tr:hover {
-            background: var(--color-secondary);
-        }
-
-        .coming-soon {
-            text-align: center;
-            padding: 60px 20px;
-            color: var(--color-text-light);
-        }
-
-        .coming-soon h2 {
-            color: var(--color-primary);
-            margin-bottom: 10px;
-        }
-
-        .error-message {
-            background: #ffebee;
-            color: var(--color-error);
-            padding: 12px;
-            border-radius: 6px;
-            margin-bottom: 20px;
-            font-size: 13px;
-            border-left: 4px solid var(--color-error);
-        }
-
-        h2 {
-            color: var(--color-primary);
-            margin-bottom: 20px;
-            font-size: 22px;
-        }
-
-        h3 {
-            color: var(--color-text);
-            font-size: 16px;
-            margin: 20px 0 10px 0;
-        }
-
-        .note {
-            font-size: 12px;
-            color: var(--color-text-light);
-            margin-top: 10px;
-            font-style: italic;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🔬 Physics Lab Calculator</h1>
-            <p>Interactive tools for optics and wave experiments | CBSE Class 12</p>
+            <h1>🔬 Physics Lab Calculator Suite</h1>
+            <p>Complete CBSE Class 12 Experiments | Optics & Electricity | 100cm Optical Bench</p>
         </header>
 
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('prism')">Prism Deviation</button>
-            <button class="tab-btn" onclick="switchTab('focal-length')">Focal Length (Coming Soon)</button>
+            <button class="tab-btn" onclick="switchTab('lens-focal')">Lens Focal Length</button>
+            <button class="tab-btn" onclick="switchTab('mirror-focal')">Convex Mirror</button>
+            <button class="tab-btn" onclick="switchTab('ohms-law')">Ohm's Law</button>
+            <button class="tab-btn" onclick="switchTab('resistivity')">Resistivity</button>
+            <button class="tab-btn" onclick="switchTab('metre-bridge')">Metre Bridge</button>
             <button class="tab-btn" onclick="switchTab('help')">Help & Formulas</button>
         </div>
 
         <div class="content-wrapper">
-            <!-- PRISM DEVIATION CALCULATOR -->
-            <div id="prism" class="tab-content active">
-                <h2>Prism Deviation Calculator</h2>
-
-                <div class="formula-box">
-                    <strong>Formula:</strong> δ = i₁ + i₂ - A<br>
-                    where: i₁ = angle of incidence, i₂ = angle of emergence, A = prism angle<br><br>
-                    <strong>Refractive Index (at minimum deviation):</strong><br>
-                    μ = sin[(A + D_min)/2] / sin(A/2)
-                </div>
-
-                <div class="calculator-section">
-                    <div>
-                        <h3>Enter Values</h3>
-                        <div class="input-group">
-                            <label>Prism Angle (A) in degrees</label>
-                            <input type="number" id="prismAngle" value="60" min="30" max="90" step="1">
-                            <div class="note">Typical: 30°, 45°, 60°</div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Angle of Incidence (i₁) in degrees</label>
-                            <input type="number" id="angleIncidence" value="45" min="30" max="80" step="1">
-                            <div class="note">Range: 35° - 75°</div>
-                        </div>
-
-                        <div class="input-group">
-                            <label>Refractive Index (μ) of Prism</label>
-                            <input type="number" id="refractiveIndex" value="1.5" min="1.3" max="1.9" step="0.05">
-                            <div class="note">Glass: 1.5, Crown glass: 1.52, Flint glass: 1.6</div>
-                        </div>
-
-                        <div class="button-group">
-                            <button onclick="calculateDeviation()">Calculate Deviation</button>
-                            <button class="secondary" onclick="generateGraph()">Generate Graph</button>
-                        </div>
-
-                        <button style="width: 100%; margin-top: 10px;" onclick="clearResults()">Clear</button>
-                    </div>
-
-                    <div>
-                        <h3>Results</h3>
-                        <div id="resultsSection" style="display: none;">
-                            <div class="results-box">
-                                <h3>Calculated Values</h3>
-                                <div class="result-item">
-                                    <span class="result-label">Angle of Refraction (r₁):</span>
-                                    <span class="result-value" id="refraction1">--</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="result-label">Angle at Second Surface (r₂):</span>
-                                    <span class="result-value" id="refraction2">--</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="result-label">Angle of Emergence (i₂):</span>
-                                    <span class="result-value" id="angleEmergence">--</span>
-                                </div>
-                                <div class="result-item">
-                                    <span class="result-label"><strong>Angle of Deviation (δ):</strong></span>
-                                    <span class="result-value" id="deviationAngle" style="font-size: 18px;">--</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div id="errorSection" style="display: none;"></div>
-                    </div>
-                </div>
-
-                <div class="chart-container" id="chartContainer" style="display: none;">
-                    <h3>Deviation vs Angle of Incidence</h3>
-                    <p style="color: var(--color-text-light); font-size: 12px; margin-bottom: 15px;">
-                        Graph showing how deviation angle changes with varying angle of incidence
-                    </p>
-                    <canvas id="deviationChart"></canvas>
-                </div>
-
-                <div class="table-container" id="tableContainer" style="display: none;">
-                    <h3>Detailed Observations Table</h3>
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>i₁ (°)</th>
-                                <th>r₁ (°)</th>
-                                <th>r₂ (°)</th>
-                                <th>i₂ (°)</th>
-                                <th>δ (°)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="info-section">
-                    <strong>Lab Procedure:</strong> Vary the angle of incidence from 35° to 70° in steps of 5°. Record the angle of emergence for each angle of incidence. 
-                    Plot a graph between angle of incidence and angle of deviation. The minimum deviation occurs at a specific angle.
-                </div>
-            </div>
-
-            <!-- FOCAL LENGTH CALCULATOR (Coming Soon) -->
-            <div id="focal-length" class="tab-content">
-                <div class="coming-soon">
-                    <h2>Focal Length Calculator (Optical Bench)</h2>
-                    <p>Calculate focal length using lens positions and object/image distances</p>
-                    <p style="margin-top: 20px;">Coming soon! This will include:</p>
-                    <ul style="margin-top: 15px; text-align: left; display: inline-block;">
-                        <li>✓ Focal length calculation from u and v distances</li>
-                        <li>✓ Reverse calculator: Generate table from focal length</li>
-                        <li>✓ 2f position readings with variations</li>
-                        <li>✓ Graphical representation</li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- HELP & FORMULAS -->
-            <div id="help" class="tab-content">
-                <h2>Help & Formulas</h2>
-
-                <h3>📐 Prism Deviation</h3>
-                <div class="formula-box">
-                    <strong>Main Formula:</strong><br>
-                    δ = i₁ + i₂ - A
-                    <br><br>
-                    <strong>Related Formulas:</strong><br>
-                    • A = r₁ + r₂<br>
-                    • Snell's Law: sin(i₁) = μ × sin(r₁)<br>
-                    • sin(i₂) = μ × sin(r₂)<br>
-                    • Refractive Index: μ = sin[(A + δ_min)/2] / sin(A/2)
-                </div>
-
-                <h3>🔍 Key Concepts</h3>
-                <div class="info-section">
-                    <strong>Minimum Deviation (δ_min):</strong> The minimum deviation occurs when the light ray passes symmetrically through the prism. 
-                    At this point, i₁ = i₂ and r₁ = r₂ = A/2. This is the most important point in the experiment for determining refractive index.
-                </div>
-
-                <div class="info-section">
-                    <strong>Graph Analysis:</strong> When you plot angle of deviation (δ) against angle of incidence (i₁), 
-                    you get a U-shaped curve. The minimum point gives you δ_min, which can be used to calculate the refractive index of the prism material.
-                </div>
-
-                <h3>📋 Experimental Notes</h3>
-                <div style="background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 4px solid #ff9800; margin-top: 15px;">
-                    <strong>Standard Procedure:</strong><br>
-                    1. Use a prism with known angle A (typically 60°)<br>
-                    2. Vary angle of incidence from 35° to 70°<br>
-                    3. For each angle, measure angle of emergence<br>
-                    4. Calculate deviation for each reading<br>
-                    5. Plot graph and identify minimum deviation<br>
-                    6. Calculate refractive index using minimum deviation formula
-                </div>
-
-                <h3>📚 About This Tool</h3>
-                <p style="margin-top: 15px; line-height: 1.6; color: var(--color-text-light);">
-                    This physics lab calculator is designed for CBSE Class 12 students studying optics and refraction. 
-                    It follows standard experimental procedures from the NCERT physics curriculum. 
-                    The tool calculates deviation angles accurately and generates visual representations to help understand 
-                    the relationship between incidence angle and deviation.
-                </p>
-            </div>
+            <!-- All experiment content goes here - modular loading -->
+            <div id="content-loading">Loading experiments...</div>
         </div>
     </div>
 
+    <script src="optics.js"></script>
+    <script src="electricity.js"></script>
     <script>
-        let chart = null;
-
+        // Main tab switching logic
         function switchTab(tabName) {
-            // Hide all tabs
-            document.querySelectorAll('.tab-content').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-
-            // Show selected tab
-            document.getElementById(tabName).classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            const content = document.getElementById('content-loading');
+            content.innerHTML = `<div class="loading">Loading ${tabName}...</div>`;
+            
             event.target.classList.add('active');
+            
+            setTimeout(() => loadExperiment(tabName), 200);
         }
 
-        function calculateDeviation() {
-            const i1 = parseFloat(document.getElementById('angleIncidence').value);
-            const A = parseFloat(document.getElementById('prismAngle').value);
-            const mu = parseFloat(document.getElementById('refractiveIndex').value);
-
-            // Validation
-            if (isNaN(i1) || isNaN(A) || isNaN(mu)) {
-                showError('Please enter valid numbers');
-                return;
-            }
-
-            if (i1 < 30 || i1 > 80) {
-                showError('Angle of incidence should be between 30° and 80°');
-                return;
-            }
-
-            try {
-                // Apply Snell's Law at first surface: sin(i1) = μ × sin(r1)
-                const sinR1 = Math.sin(toRad(i1)) / mu;
-
-                if (Math.abs(sinR1) > 1) {
-                    showError('Total internal reflection! Angle is beyond critical angle. Try smaller angle.');
-                    return;
-                }
-
-                const r1 = toDeg(Math.asin(sinR1));
-                const r2 = A - r1;
-
-                // Check if r2 is valid
-                if (r2 < 0 || r2 > 90) {
-                    showError('Invalid configuration. Try different prism angle or angle of incidence.');
-                    return;
-                }
-
-                // Apply Snell's Law at second surface: μ × sin(r2) = sin(i2)
-                const sinI2 = mu * Math.sin(toRad(r2));
-
-                if (sinI2 > 1) {
-                    showError('Total internal reflection at second surface! Try a smaller angle or different prism.');
-                    return;
-                }
-
-                const i2 = toDeg(Math.asin(sinI2));
-                const delta = i1 + i2 - A;
-
-                // Display results
-                document.getElementById('refraction1').textContent = r1.toFixed(2) + '°';
-                document.getElementById('refraction2').textContent = r2.toFixed(2) + '°';
-                document.getElementById('angleEmergence').textContent = i2.toFixed(2) + '°';
-                document.getElementById('deviationAngle').textContent = delta.toFixed(2) + '°';
-
-                document.getElementById('resultsSection').style.display = 'block';
-                document.getElementById('errorSection').style.display = 'none';
-
-            } catch (error) {
-                showError('Calculation error: ' + error.message);
-            }
+        async function loadExperiment(tabName) {
+            const content = document.getElementById('content-loading');
+            
+            // Load experiment content dynamically
+            const experiments = {
+                'prism': await fetchExperimentContent('prism'),
+                'lens-focal': await fetchExperimentContent('lens'),
+                'mirror-focal': await fetchExperimentContent('mirror'),
+                'ohms-law': await fetchExperimentContent('ohms'),
+                'resistivity': await fetchExperimentContent('resistivity'),
+                'metre-bridge': await fetchExperimentContent('metrebridge'),
+                'help': await fetchExperimentContent('help')
+            };
+            
+            content.innerHTML = experiments[tabName];
+            initializeExperiment(tabName);
         }
 
-        function generateGraph() {
-            const A = parseFloat(document.getElementById('prismAngle').value);
-            const mu = parseFloat(document.getElementById('refractiveIndex').value);
-
-            if (isNaN(A) || isNaN(mu)) {
-                showError('Please enter prism angle and refractive index');
-                return;
-            }
-
-            const incidenceAngles = [];
-            const deviationAngles = [];
-            const tableData = [];
-
-            // Generate data for incidence angles from 35 to 70 degrees
-            for (let i1 = 35; i1 <= 70; i1 += 2) {
-                try {
-                    const sinR1 = Math.sin(toRad(i1)) / mu;
-
-                    if (sinR1 > 1) continue; // Skip total internal reflection
-
-                    const r1 = toDeg(Math.asin(sinR1));
-                    const r2 = A - r1;
-
-                    if (r2 < 0 || r2 > 90) continue;
-
-                    const sinI2 = mu * Math.sin(toRad(r2));
-
-                    if (sinI2 > 1) continue;
-
-                    const i2 = toDeg(Math.asin(sinI2));
-                    const delta = i1 + i2 - A;
-
-                    incidenceAngles.push(i1);
-                    deviationAngles.push(delta);
-                    tableData.push({ i1: i1.toFixed(1), r1: r1.toFixed(2), r2: r2.toFixed(2), i2: i2.toFixed(2), delta: delta.toFixed(2) });
-                } catch (e) {
-                    continue;
-                }
-            }
-
-            if (incidenceAngles.length === 0) {
-                showError('Cannot generate graph with current parameters. Try different values.');
-                return;
-            }
-
-            // Create/Update Chart
-            const ctx = document.getElementById('deviationChart');
-            if (chart) {
-                chart.destroy();
-            }
-
-            chart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: incidenceAngles.map(angle => angle.toFixed(0) + '°'),
-                    datasets: [{
-                        label: 'Angle of Deviation (δ)',
-                        data: deviationAngles,
-                        borderColor: '#2180a5',
-                        backgroundColor: 'rgba(33, 128, 141, 0.05)',
-                        borderWidth: 2,
-                        fill: true,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointBackgroundColor: '#2180a5',
-                        pointHoverRadius: 7,
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            display: true,
-                            position: 'top'
-                        }
-                    },
-                    scales: {
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Angle of Deviation (degrees)'
-                            },
-                            min: Math.min(...deviationAngles) - 5
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Angle of Incidence (degrees)'
-                            }
-                        }
-                    }
-                }
-            });
-
-            // Show chart and table
-            document.getElementById('chartContainer').style.display = 'block';
-            document.getElementById('tableContainer').style.display = 'block';
-
-            // Populate table
-            const tableBody = document.getElementById('tableBody');
-            tableBody.innerHTML = tableData.map(row => `
-                <tr>
-                    <td>${row.i1}</td>
-                    <td>${row.r1}</td>
-                    <td>${row.r2}</td>
-                    <td>${row.i2}</td>
-                    <td><strong>${row.delta}</strong></td>
-                </tr>
-            `).join('');
-
-            document.getElementById('resultsSection').style.display = 'block';
-            document.getElementById('errorSection').style.display = 'none';
-
-            // Auto-scroll to chart
-            setTimeout(() => {
-                document.getElementById('chartContainer').scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 200);
+        function initializeExperiment(tabName) {
+            // Initialize specific experiment scripts
+            window[`init_${tabName}`]?.();
         }
 
-        function clearResults() {
-            document.getElementById('resultsSection').style.display = 'none';
-            document.getElementById('chartContainer').style.display = 'none';
-            document.getElementById('tableContainer').style.display = 'none';
-            document.getElementById('errorSection').style.display = 'none';
-            if (chart) {
-                chart.destroy();
-                chart = null;
-            }
+        // Placeholder for dynamic content - actual implementation in JS files
+        async function fetchExperimentContent(name) {
+            // In production, these would be loaded from separate HTML templates
+            return `<div class="experiment-placeholder">${name} loaded</div>`;
         }
 
-        function showError(message) {
-            document.getElementById('errorSection').innerHTML = `<div class="error-message">${message}</div>`;
-            document.getElementById('errorSection').style.display = 'block';
-            document.getElementById('resultsSection').style.display = 'none';
-        }
-
-        function toRad(degrees) {
-            return degrees * Math.PI / 180;
-        }
-
-        function toDeg(radians) {
-            return radians * 180 / Math.PI;
-        }
-
-        // Set default tab on load
-        window.addEventListener('load', () => {
-            document.querySelector('.tab-btn').classList.add('active');
-        });
+        // Initialize on load
+        window.addEventListener('load', () => switchTab('prism'));
     </script>
 </body>
 </html>
